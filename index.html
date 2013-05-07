@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>			<html class="lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>				 <html class="lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>				 <html class="lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html> <!--<![endif]-->
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<title></title>
+	</head>
+	<body>
+
+		<div id="page">
+			<button id="next">Next</button>
+			<button id="run">Run</button>
+			<button id="end">End</button>
+			<pre id="registers"></pre>
+			<pre id="instructions"></pre>
+			<pre id="rs"></pre>
+		</div>
+
+		<script src="js/instruction_type.js"></script>
+		<script src="js/common_data_bus.js"></script>
+		<script src="js/instruction.js"></script>
+		<script src="js/memory.js"></script>
+		<script src="js/register_file.js"></script>
+		<script src="js/reservation_station.js"></script>
+		<script src="js/main.js"></script>
+		<script>
+			(function() {
+				'use strict';
+
+				var program = ' ld F6, 105' +
+				              ' ld f2, 101' +
+				              ' muld f0, f2, f4' +
+				              ' subd f8, f6, f2' +
+				              ' divd f10, f0, f6' +
+				              ' addd f6, f8, f2' +
+				              '';
+
+				var System = {};
+				System.memory = new Memory(4096);
+				System.registerFile = new RegisterFile(11, 'F');
+				System.commonDataBus = new CommonDataBus();
+				System.reservationStations = {
+					ADD_1: new ReservationStation('ADD_1'),
+					ADD_2: new ReservationStation('ADD_2'),
+					ADD_3: new ReservationStation('ADD_3'),
+
+					MUL_1: new ReservationStation('MUL_1'),
+					MUL_2: new ReservationStation('MUL_2'),
+
+					LOAD_1: new ReservationStation('LOAD_1'),
+					LOAD_2: new ReservationStation('LOAD_2'),
+					LOAD_3: new ReservationStation('LOAD_3'),
+
+					STORE_1: new ReservationStation('STORE_1'),
+					STORE_2: new ReservationStation('STORE_2'),
+					STORE_3: new ReservationStation('STORE_3')
+
+				};
+
+
+
+				System.instructionTypes = {
+					'ADDD': new InstructionType('ADDD', 2, 0,
+												[InstructionType.PARAMETER_TYPE_REGISTER,
+												 InstructionType.PARAMETER_TYPE_REGISTER,
+												 InstructionType.PARAMETER_TYPE_REGISTER],
+												function(p) { return p[1] + p[2]; },
+												[System.reservationStations['ADD_1'],
+												 System.reservationStations['ADD_2'],
+												 System.reservationStations['ADD_3']]),
+
+					'SUBD': new InstructionType('SUBD', 2, 0,
+												[InstructionType.PARAMETER_TYPE_REGISTER,
+												 InstructionType.PARAMETER_TYPE_REGISTER,
+												 InstructionType.PARAMETER_TYPE_REGISTER],
+												function(p) { return p[1] - p[2]; },
+												[System.reservationStations['ADD_1'],
+												 System.reservationStations['ADD_2'],
+												 System.reservationStations['ADD_3']]),
+
+					'MULD': new InstructionType('MULD', 10, 0,
+												[InstructionType.PARAMETER_TYPE_REGISTER,
+												 InstructionType.PARAMETER_TYPE_REGISTER,
+												 InstructionType.PARAMETER_TYPE_REGISTER],
+												function(p) { return p[1] * p[2]; },
+												[System.reservationStations['MUL_1'],
+												 System.reservationStations['MUL_2']]),
+
+					'DIVD': new InstructionType('DIVD', 40, 0,
+												[InstructionType.PARAMETER_TYPE_REGISTER,
+												 InstructionType.PARAMETER_TYPE_REGISTER,
+												 InstructionType.PARAMETER_TYPE_REGISTER],
+												function(p) { return p[1] / p[2]; },
+												[System.reservationStations['MUL_1'],
+												 System.reservationStations['MUL_2']]),
+
+					'LD': new InstructionType('LD', 2, 0,
+											  [InstructionType.PARAMETER_TYPE_REGISTER,
+											   InstructionType.PARAMETER_TYPE_ADDRESS],
+											  function(p, memory) { return memory.load(p[1]); },
+											  [System.reservationStations['LOAD_1'],
+											   System.reservationStations['LOAD_2'],
+											   System.reservationStations['LOAD_3']]),
+
+					'ST': new InstructionType('ST', 2, -1,
+											  [InstructionType.PARAMETER_TYPE_REGISTER,
+											   InstructionType.PARAMETER_TYPE_ADDRESS],
+											  function(p, memory) { return p[0]; },
+											  [System.reservationStations['STORE_1'],
+											   System.reservationStations['STORE_2'],
+											   System.reservationStations['STORE_3']])
+				};
+
+				var main = new Main(program, System);
+
+				// main.run();
+				// console.log(main.instructions);
+
+				function update() {
+					var reg = document.getElementById('registers');
+					// TODO
+					var html = 'CLK: ' + System.clock + '<br>';
+					for (var i = 0; i < 11; ++i) {
+						var busy = System.commonDataBus.getBusy(InstructionType.PARAMETER_TYPE_REGISTER, 'F' + i);
+						html += 'F' + i + ': ';
+						if (busy) {
+								html += '[' + busy.instruction.id + ']<br>';
+						} else {
+								html += System.registerFile.get('F' + i) + '<br>';
+						}
+					}
+					reg.innerHTML = html;
+
+					var ins = document.getElementById('instructions');
+					// TODO
+					html = '';
+					for (var i = 0; i < main.instructions.length; ++i) {
+						var ii = main.instructions[i];
+						html += ii.id + ' ' + ii.type.name + ' ' + ii.parameters.join(', ') + '	 ';
+						html += (ii.issueTime >= 0 ? ii.issueTime : '-') + ' ';
+						html += (ii.executeTime >= 0 ? ii.executeTime : '-') + ' ';
+						html += (ii.writeBackTime >= 0 ? ii.writeBackTime : '-') + ' ';
+						html += '<br>';
+					}
+					ins.innerHTML = html;
+
+					var rs = document.getElementById('rs');
+					// TODO
+					html = '';
+					for (var name in System.reservationStations) {
+						var station = System.reservationStations[name];
+						html += name + ' ';
+						switch (station.state) {
+						case ReservationStation.STATE_IDLE:
+							html += 'IDLE';
+							break;
+						case ReservationStation.STATE_ISSUE:
+							html += 'ISSUE';
+							break;
+						case ReservationStation.STATE_EXECUTE:
+							html += 'EXEC';
+							break;
+						case ReservationStation.STATE_WRITE_BACK:
+							html += 'WRITE';
+						}
+						if (station.state !== ReservationStation.STATE_IDLE) {
+							html += ' [' + station.instruction.id + ']';
+						}
+						html += '<br>';
+					}
+					rs.innerHTML = html;
+				}
+
+				var interval;
+
+				var next = document.getElementById('next');
+				next.onclick = function() {
+					var done = main.step();
+					update();
+					if (done && interval) {
+						clearInterval(interval);
+					}
+				};
+				update();
+
+				var run = document.getElementById('run');
+				run.onclick = function() {
+					interval = setInterval(next.onclick, 100);
+				};
+
+				var end = document.getElementById('end');
+				end.onclick = function() {
+					main.run();
+					update();
+					if (interval) {
+						clearInterval(interval);
+					}
+				};
+			})();
+		</script>
+	</body>
+</html>
