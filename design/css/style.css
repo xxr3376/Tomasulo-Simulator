@@ -1,0 +1,95 @@
+body{
+	font-family: "微软雅黑";
+	margin: 0;
+	padding: 0;
+}
+.top-wrap{
+	height: 500px;
+	border: 1px solid #000;
+}
+.left-wrap{
+	position: absolute;
+	width: 150px;
+	height: 100%;
+	border: 1px solid #000;
+	z-index: 10;
+}
+.center-wrap{
+	position: absolute;
+	left: 150px;
+	right: 200px;
+	border-left: 2px solid #666;
+	height: 500px;
+	border: 1px solid #000;
+}
+.bottom-wrap{
+	position: absolute;
+	left: 150px;
+	right: 0;
+	border: 1px solid #000;
+}
+.right-wrap{
+	position: absolute;
+	width: 200px;
+	height: 500px;
+	right: 0;
+	border: 1px solid #000;
+}
+
+.instruction div{
+	display: inline-block;
+}
+.timeline{
+	margin-left: 10px;
+}
+.list{
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}	
+.list li{
+	border-bottom: 1px solid #EEE;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+	min-height: 10px;
+	padding: 5px 5px 5px 5px;
+	position: relative;
+	overflow: hidden;
+	color: #666;
+	font-size: 0.8rem;
+}	
+.pane-instruction{
+	width: 200px;
+}
+.pane-reservation{
+	width: 300px;
+}
+.pane-registers{
+	width: 120px;
+	overflow-x: hidden;
+	overflow-y: auto;
+	
+}
+li.station .parameter{
+	margin-left: 10px;
+	display: inline-block;
+}
+.explain{
+	color: #666;
+	font-size: 0.8rem;
+	padding: 3px 0;
+	text-align: center;
+	border: none;
+	border-bottom: 1px solid;
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0, #E6E6E6), color-stop(1, #DDD));
+	background: -webkit-linear-gradient(top, #E6E6E6 0%, #DDD 100%);
+	background: linear-gradient(top, #E6E6E6 0%, #DDD 100%);
+	-webkit-box-shadow: inset 0 1px 0 #EEE;
+	box-shadow: inset 0 1px 0 #EEE;
+	border-color: #CCC;
+	text-shadow: 0 1px 0 #F3F3F3;
+}	
+.pane-clock{
+	padding: 10px;
+	font-size: 2em;
+}

@@ -1,0 +1,118 @@
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+		<title>Tomasulo A</title>
+		<link rel="stylesheet" href="css/style.css" type="text/css" media="screen" charset="utf-8">
+		<link rel="stylesheet" href="css/font-awesome.min.css" type="text/css" media="screen" charset="utf-8">
+	</head>
+	<body>
+		<div class="page-wrap">
+			<div class="left-wrap">
+				<div class="pane-clock">
+					<i class="icon-time"></i>
+					<span class="clock">
+						3
+					</span>
+				</div>
+				<div class="pane-registers">
+					<div class="explain">寄存器堆</div>
+					<div class="registers">
+						<div class="registers-type">
+							<div class="type-name"> 浮点寄存器 </div>
+							<ol class="registers-file list" id="float-registers">
+								<li class="register">
+								<span class="name"> F0 </span>
+								<span class="value"> 1 </span>
+								</li>
+								<li class="register">
+								<span class="name"> F1 </span>
+								<span class="value"> 1 </span>
+								</li>
+							</ol>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="top-wrap">
+				<div class="center-wrap">
+					<div class="pane-control">
+						<button> Step </button>
+						<button> Run </button>
+						<button> Restart </button>
+						<button> End </button>
+					</div>
+					<div class="pane-instruction">
+						<div class="explain">指令队列</div>
+						<ol id="instruction-show" class="list">
+							<li class="instruction">
+							<div class="instruction-detial">LD F6, 34</div>
+							<div class="timeline">
+								<span class="issue-time">1</span>
+								<span class="exec-time">3</span>
+								<span class="writeback-time">4</span>
+							</div>
+							</li>
+							<li class="instruction">
+							<div class="instruction-detial">LD F6, 34</div>
+							<div class="timeline">
+								<span class="issue-time">1</span>
+								<span class="exec-time">3</span>
+								<span class="writeback-time">4</span>
+							</div>
+							</li>
+							<li class="instruction">
+							<div class="instruction-detial">LD F6, 34</div>
+							<div class="timeline">
+								<span class="issue-time">1</span>
+								<span class="exec-time">3</span>
+								<span class="writeback-time">4</span>
+							</div>
+							</li>
+							<li class="instruction">
+							<div class="instruction-detial">LD F6, 34</div>
+							<div class="timeline">
+								<span class="issue-time">1</span>
+								<span class="exec-time">3</span>
+								<span class="writeback-time">4</span>
+							</div>
+							</li>
+						</ol>
+						<div class="detail">
+							指令条数：6  PC：0
+						</div>
+					</div>
+
+					<div class="pane-reservation">
+						<div class="explain">保留站</div>
+						<ol id="reservation-stations" class="list">
+							<li class="station">
+							<span class="name">ADD_1</span>
+							<span class="time-remaining"> 23</span>
+							<!--<span class="busy"> NO </span> -->
+							<span class="operation"> Add </span>
+							<span class="instruction-number"> [5]</span>
+							<span class="state"> IDEL </span>
+							<div class="parameter">
+								<span class="input1"> 14 </span>
+								<span class="input2"> [3] </span>
+								<span class="output"> [1] </span>
+							</div>
+						</ol>
+					</div>
+				</div>
+				<!-- Float to right -->
+				<div class="right-wrap">
+					<div class="pane-settings">
+						<div class="explain">当前配置</div>
+					</div>
+				</div>
+			</div>
+			<div class="bottom-wrap">
+				<div class="pane-memory">
+					<div class="explain">内存</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
