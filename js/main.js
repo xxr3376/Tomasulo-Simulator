@@ -73,14 +73,17 @@
 							switch (instruction.type.parameters[i]) {
 							case InstructionType.PARAMETER_TYPE_REGISTER:
 								tag = this.system.commonDataBus.getBusy(InstructionType.PARAMETER_TYPE_REGISTER, instruction.parameters[i]);
-								if (tag !== null) {
+								if (tag === null) {
 									value = this.system.registerFile.get(instruction.parameters[i]);
 								}
 								break;
 							case InstructionType.PARAMETER_TYPE_ADDRESS:
+								tag = this.system.commonDataBus.getBusy(InstructionType.PARAMETER_TYPE_ADDRESS, instruction.parameters[i]);
 								value = instruction.parameters[i];
 								break;
 							}
+						} else { // dest
+							value = instruction.parameters[i];
 						}
 
 						station.parameters.push(value);
@@ -109,7 +112,7 @@
 				var dest = station.instruction.type.destParameter;
 				var type = station.instruction.type.parameters[dest];
 				var name = station.instruction.parameters[dest];
-				var value = station.instruction.type.calculate(station.parameters, this.system.memory);
+				var value = station.instruction.type.calculate.call(station, station.parameters);
 				if (typeof value === 'undefined') {
 					value = true;
 				}
@@ -119,11 +122,13 @@
 					this.system.registerFile.set(name, value);
 					break;
 				case InstructionType.PARAMETER_TYPE_ADDRESS:
-					this.system.memory.store(name, value);
+					value = name;
 					break;
 				}
 
-				this.system.commonDataBus.setBusy(type, name, null);
+				if (this.system.commonDataBus.getBusy(type, name) === station) {
+					this.system.commonDataBus.setBusy(type, name, null);
+				}
 				this.system.commonDataBus.setResult(station, value);
 
 				station.instruction.writeBackTime = this.system.clock;
