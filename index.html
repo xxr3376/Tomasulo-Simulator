@@ -109,7 +109,7 @@
 					'ST': new InstructionType('ST', 2, 1,
 											  [InstructionType.PARAMETER_TYPE_REGISTER,
 											   InstructionType.PARAMETER_TYPE_ADDRESS],
-											  function(p) { console.log(p); this.memory.store(p[1], p[0]); return p[0]; },
+											  function(p) { this.memory.store(p[1], p[0]); return p[0]; },
 											  [System.reservationStations['STORE_1'],
 											   System.reservationStations['STORE_2'],
 											   System.reservationStations['STORE_3']])

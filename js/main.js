@@ -126,7 +126,9 @@
 					break;
 				}
 
-				this.system.commonDataBus.setBusy(type, name, null);
+				if (this.system.commonDataBus.getBusy(type, name) === station) {
+					this.system.commonDataBus.setBusy(type, name, null);
+				}
 				this.system.commonDataBus.setResult(station, value);
 
 				station.instruction.writeBackTime = this.system.clock;
