@@ -18,8 +18,8 @@
 
 		/* parse program */
 		program = program.toUpperCase()
-						 .replace(/[\s,]+/g, ',')
-						 .replace(/^,|,$/g, '');
+		                 .replace(/[\s,]+/g, ',')
+		                 .replace(/^,|,$/g, '');
 
 		var tokens = program.split(',');
 		var instructions = [];
@@ -48,7 +48,7 @@
 	Main.prototype.step = function() {
 		++this.system.clock;
 
-		/* issue */
+		/* START issue */
 		if (this.instructions.length > this.issuedInstructions) {
 			var instruction = this.instructions[this.issuedInstructions];
 			var stations = instruction.type.stations;
@@ -61,7 +61,7 @@
 					instruction.issueTime = this.system.clock;
 
 					var dest = instruction.type.destParameter;
-					var paramCount =  instruction.type.parameters.length;
+					var paramCount = instruction.type.parameters.length;
 
 					station.parameters = [];
 					station.tags = [];
@@ -98,17 +98,19 @@
 				}
 			}
 		}
+		/* END issue */
 
 		for (var i in this.system.reservationStations) {
 			var station = this.system.reservationStations[i];
 			if (station.state === ReservationStation.STATE_EXECUTE) {
-				/* execute */
+				/* START execute */
 				if ((--station.instruction.time) === 0) {
 					station.instruction.executeTime = this.system.clock;
 					station.state = ReservationStation.STATE_WRITE_BACK;
 				}
+				/* END execute */
 			} else if (station.state === ReservationStation.STATE_WRITE_BACK) {
-				/* writeback */
+				/* START writeback */
 				var dest = station.instruction.type.destParameter;
 				var type = station.instruction.type.parameters[dest];
 				var name = station.instruction.parameters[dest];
@@ -117,22 +119,23 @@
 					value = true;
 				}
 
-				switch (type) {
-				case InstructionType.PARAMETER_TYPE_REGISTER:
-					this.system.registerFile.set(name, value);
-					break;
-				case InstructionType.PARAMETER_TYPE_ADDRESS:
-					value = name;
-					break;
-				}
-
 				if (this.system.commonDataBus.getBusy(type, name) === station) {
+					switch (type) {
+					case InstructionType.PARAMETER_TYPE_REGISTER:
+						this.system.registerFile.set(name, value);
+						break;
+					case InstructionType.PARAMETER_TYPE_ADDRESS:
+						value = name;
+						break;
+					}
+
 					this.system.commonDataBus.setBusy(type, name, null);
+					this.system.commonDataBus.setResult(station, value);
 				}
-				this.system.commonDataBus.setResult(station, value);
 
 				station.instruction.writeBackTime = this.system.clock;
 				station.state = ReservationStation.STATE_IDLE;
+				/* END writeback */
 			}
 		}
 
@@ -140,6 +143,7 @@
 		for (var i in this.system.reservationStations) {
 			var station = this.system.reservationStations[i];
 			if (station.state === ReservationStation.STATE_ISSUE) {
+				/* check if all the values needed for execution is available */
 				var needMoreValues = false;
 				for (var j = 0; j < station.tags.length; ++j) {
 					if (station.tags[j] !== null) {
