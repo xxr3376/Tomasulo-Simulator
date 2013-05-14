@@ -2,6 +2,26 @@ body{
 	font-family: "微软雅黑";
 	margin: 0;
 	padding: 0;
+	background: #FfFfFf;
+}
+span.right{
+	float:right;
+	font-size: 16px;
+	margin-right: 20px;
+	color: #888;
+}
+a {
+	text-decoration: none;
+	color: #888;
+	transition: color ease-in 0.3s;
+}	
+a:hover {
+	color: black;
+}
+	
+span.right i{
+	padding-top: 4px;
+	font-size: 16px;
 }
 .top-wrap{
 	height: 500px;
@@ -15,7 +35,7 @@ body{
 .center-wrap{
 	position: absolute;
 	left: 150px;
-	right: 300px;
+	right: 500px;
 	border-left: 2px solid #666;
 	height: 500px;
 }
@@ -26,14 +46,10 @@ body{
 }
 .right-wrap{
 	position: absolute;
-	width: 300px;
+	width: 500px;
 	height: 500px;
 	right: 0;
 	border-left: 2px solid #666;
-}
-
-.instruction div{
-	display: inline-block;
 }
 .timeline{
 	margin-left: 10px;
@@ -55,13 +71,13 @@ body{
 	font-size: 0.8rem;
 }	
 .pane-instruction{
-	width: 300px;
+	width: 500px;
 }
 .pane-reservation{
 	width: 600px;
 }
 .pane-registers{
-	width: 120px;
+	width: 150px;
 	overflow-x: hidden;
 	overflow-y: auto;
 	
@@ -84,8 +100,11 @@ li:nth-child(even){
 	border-right: 1px solid #ccc;
 	padding-right: 5px;
 	margin: 0px;
+	min-height: 19px;
 }
-.station .parameter .input1,.input2,.output{
+.station .p1,
+.station .p2,
+.station .p3{
 	width: 45px;
 	display: inline-block;
 	text-align: center;
@@ -110,11 +129,39 @@ li:nth-child(even){
 	display: inline-block;
 	text-align: center;
 }
+.instruction span{
+	border-right: 1px solid #ccc;
+	padding-right: 5px;
+	margin: 0px;
+	min-height: 19px;
+}
+.instruction .inst-linenum{
+	width: 30px;
+	display: inline-block;
+	text-align: right;
+	margin-right: 10px;
+}
+.instruction .instruction-detail{
+	width: 120px;
+	display: inline-block;
+}
+.instruction .issue-time,
+.instruction .exec-time,
+.instruction .writeback-time {
+	width: 60px;
+	display: inline-block;
+}
 .station .state{
+	width: 70px;
+	display: inline-block;
+	text-align: left;
+}
+.insturction .inst-linenum{
 	width: 40px;
 	display: inline-block;
 	text-align: center;
 }
+
 
 .explain{
 	color: #666;

@@ -1,0 +1,336 @@
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+		<title>Tomasulo A</title>
+		<link rel="stylesheet" href="css/style.css" type="text/css" media="screen" charset="utf-8">
+		<link rel="stylesheet" href="css\jquery-ui-1.10.3.custom.min.css" type="text/css" media="screen" charset="utf-8">
+		<link rel="stylesheet" href="css/font-awesome.min.css" type="text/css" media="screen" charset="utf-8">
+		<script language="javascript" type="text/javascript" src="js\jquery-1.9.1.min.js"></script>
+		<script language="javascript" type="text/javascript" src="js\jquery-ui-1.10.3.custom.min.js"></script>
+	</head>
+	<body>
+		<div id="dialog" title="instruction-edit">
+			<textarea id="inst-edit-input"></textarea>
+			<button id="inst-submit">确认</button>
+		</div>
+		<div class="page-wrap">
+			<div class="left-wrap">
+				<div class="pane-clock">
+					<i class="icon-time"></i>
+					<span id="global-clock" class="clock">
+						3
+					</span>
+				</div>
+				<div class="pane-registers">
+					<div class="explain">寄存器堆</div>
+					<div class="registers">
+						<div class="registers-type">
+							<div class="type-name"> 浮点寄存器 </div>
+							<ol class="registers-file list" id="float-registers">
+							</ol>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="top-wrap">
+				<div class="center-wrap">
+					<div class="pane-control">
+						<button id="action-step"> Step </button>
+						<button id="action-run"> Run </button>
+						<button id="action-restart"> Restart </button>
+						<button id="action-end"> End </button>
+					</div>
+
+					<div class="pane-reservation">
+						<div class="explain">保留站</div>
+						<ol id="reservation-stations" class="list">
+							<li class="station title">
+							<span class="name"> 名称</span>
+							<span class="time-remaining"> 剩余时间</span>
+							<!--<span class="busy"> NO </span> -->
+							<span class="operation"> 当前指令 </span>
+							<span class="instruction-number"> 指令行号</span>
+							<span class="state"> 状态 </span>
+								<span class="p1"> 输出 </span>
+								<span class="p2"> 输入1 </span>
+								<span class="p3"> 输入2 </span>
+							</li>
+						</ol>
+					</div>
+				</div>
+				<!-- Float to right -->
+				<div class="right-wrap">
+					<div class="pane-instruction">
+						<div class="detail">
+							指令条数：<span class="instruction-num">6</span>  PC：<span class="pc">0</span>
+						</div>
+						<div class="explain">指令队列<span class="right"><a href="#" id="action-inst-edit"><i class="icon-edit"></i>编辑</a></span></div>
+						<ol id="instruction-show" class="list">
+							<li class="instruction title">
+								<span class="inst-linenum">行号</span>
+								<span class="instruction-detail">指令</span>
+								<span class="issue-time">读取时间</span>
+								<span class="exec-time">执行时间</span>
+								<span class="writeback-time">写回时间</span>
+							</li>
+						</ol>
+					</div>
+				</div>
+			</div>
+			<div class="bottom-wrap">
+				<div class="pane-memory">
+					<div class="explain">内存</div>
+				</div>
+			</div>
+		</div>
+	</body>
+		<script src="js/instruction_type.js"></script>
+		<script src="js/common_data_bus.js"></script>
+		<script src="js/instruction.js"></script>
+		<script src="js/memory.js"></script>
+		<script src="js/register_file.js"></script>
+		<script src="js/reservation_station.js"></script>
+		<script src="js/buffer.js"></script>
+		<script src="js/main.js"></script>
+		<script>
+			function init(program) {
+				'use strict';
+
+				var System = {};
+				System.memory = new Memory(4096);
+				System.registerFile = new RegisterFile(11, 'F');
+				System.commonDataBus = new CommonDataBus();
+				System.reservationStations = {
+					ADD_1: new ReservationStation('ADD_1'),
+					ADD_2: new ReservationStation('ADD_2'),
+					ADD_3: new ReservationStation('ADD_3'),
+
+					MUL_1: new ReservationStation('MUL_1'),
+					MUL_2: new ReservationStation('MUL_2'),
+
+					LOAD_1: new Buffer('LOAD_1', System.memory),
+					LOAD_2: new Buffer('LOAD_2', System.memory),
+					LOAD_3: new Buffer('LOAD_3', System.memory),
+
+					STORE_1: new Buffer('STORE_1', System.memory),
+					STORE_2: new Buffer('STORE_2', System.memory),
+					STORE_3: new Buffer('STORE_3', System.memory)
+					
+				};
+				System.instructionTypes = {
+					'ADDD': new InstructionType('ADDD', 2, 0,
+												[InstructionType.PARAMETER_TYPE_REGISTER,
+												 InstructionType.PARAMETER_TYPE_REGISTER,
+												 InstructionType.PARAMETER_TYPE_REGISTER],
+												function(p) { return p[1] + p[2]; },
+												[System.reservationStations['ADD_1'],
+												 System.reservationStations['ADD_2'],
+												 System.reservationStations['ADD_3']]),
+
+					'SUBD': new InstructionType('SUBD', 2, 0,
+												[InstructionType.PARAMETER_TYPE_REGISTER,
+												 InstructionType.PARAMETER_TYPE_REGISTER,
+												 InstructionType.PARAMETER_TYPE_REGISTER],
+												function(p) { return p[1] - p[2]; },
+												[System.reservationStations['ADD_1'],
+												 System.reservationStations['ADD_2'],
+												 System.reservationStations['ADD_3']]),
+
+					'MULD': new InstructionType('MULD', 10, 0,
+												[InstructionType.PARAMETER_TYPE_REGISTER,
+												 InstructionType.PARAMETER_TYPE_REGISTER,
+												 InstructionType.PARAMETER_TYPE_REGISTER],
+												function(p) { return p[1] * p[2]; },
+												[System.reservationStations['MUL_1'],
+												 System.reservationStations['MUL_2']]),
+
+					'DIVD': new InstructionType('DIVD', 40, 0,
+												[InstructionType.PARAMETER_TYPE_REGISTER,
+												 InstructionType.PARAMETER_TYPE_REGISTER,
+												 InstructionType.PARAMETER_TYPE_REGISTER],
+												function(p) { return p[1] / p[2]; },
+												[System.reservationStations['MUL_1'],
+												 System.reservationStations['MUL_2']]),
+
+					'LD': new InstructionType('LD', 2, 0,
+											  [InstructionType.PARAMETER_TYPE_REGISTER,
+											   InstructionType.PARAMETER_TYPE_ADDRESS],
+											  function(p) { return this.memory.load(p[1]); },
+											  [System.reservationStations['LOAD_1'],
+											   System.reservationStations['LOAD_2'],
+											   System.reservationStations['LOAD_3']]),
+
+					'ST': new InstructionType('ST', 2, 1,
+											  [InstructionType.PARAMETER_TYPE_REGISTER,
+											   InstructionType.PARAMETER_TYPE_ADDRESS],
+											  function(p) { this.memory.store(p[1], p[0]); return p[0]; },
+											  [System.reservationStations['STORE_1'],
+											   System.reservationStations['STORE_2'],
+											   System.reservationStations['STORE_3']])
+				};
+				
+				var main = new Main(program, System);
+				return main;
+			};
+			var interval;
+			function initGUI(main){
+				$('.station:not(.title)').remove();
+				$('.instruction:not(.title)').remove();
+				$('.register:not(.title)').remove();
+				var CONSTVAR={
+					'newreg' : function(name){
+						return '<li class="register"> <span class="name">'+name+'</span> <span class="value" id="reg-' + name + '"> </span> </li>';
+					},
+					'newstation' : function(name){
+						return '<li class="station" id="station-' + name + '"> <span class="name">' + name + '</span> <span class="time-remaining"></span> <span class="operation"> </span> <span class="instruction-number"> </span> <span class="state"> </span> <span class="p1">  </span> <span class="p2"> </span> <span class="p3"></span> </li>';
+					},
+					'newinst' : function(linenum, detail){
+						return '<li class="instruction" id="inst-'+linenum+'"> <span class="inst-linenum">'+linenum+'</span><span class="instruction-detail">' + detail + '</span> <span class="issue-time"></span> <span class="exec-time"></span> <span class="writeback-time"></span> </li>';
+					}
+				};
+				function addFloatReg(prefix, name){
+					$('#float-registers').append($(CONSTVAR.newreg(prefix + name)));
+				}
+				function addStation(name){
+					$('#reservation-stations').append($(CONSTVAR.newstation(name)));
+				}
+				function addInstruction(num, inst){
+					$('#instruction-show').append($(CONSTVAR.newinst(num, inst)));
+				}
+				for (var i = 0; i < main.system.registerFile.count; i++){
+					addFloatReg(main.system.registerFile.prefix, i);
+				}
+				for (rs in main.system.reservationStations){
+					addStation(rs);
+				}
+				for (var i = 0; i < main.instructions.length; i++){
+					var ii = main.instructions[i];
+					addInstruction(ii.id, ii.type.name + ' ' + ii.parameters.join(', '));
+				}
+			}
+			function update(main) {
+				document.getElementById('global-clock').innerText = main.system.clock;
+				for (var i = 0; i < 11; ++i) {
+					var busy = main.system.commonDataBus.getBusy(InstructionType.PARAMETER_TYPE_REGISTER, 'F' + i);
+					var value = main.system.registerFile.get('F' + i);
+					document.getElementById('reg-F' + i).innerText = value;
+				}
+				for (var i = 0; i < main.instructions.length; ++i) {
+					var ii = main.instructions[i];
+					var inst = document.getElementById('inst-' + ii.id);
+					inst.querySelector('.issue-time').innerText = ii.issueTime > 0 ? ii.issueTime : '';
+					inst.querySelector('.exec-time').innerText = ii.executeTime > 0 ? ii.executeTime : '';
+					inst.querySelector('.writeback-time').innerText = ii.writeBackTime > 0 ? ii.writeBackTime : '';
+				}
+				for (var name in main.system.reservationStations) {
+					var station = main.system.reservationStations[name]
+					var guiItem = document.getElementById('station-' + name);
+					var _state;
+					switch (station.state) {
+						case ReservationStation.STATE_IDLE:
+							_state = 'IDLE';
+							break;
+						case ReservationStation.STATE_ISSUE:
+							_state = 'ISSUE';
+							break;
+						case ReservationStation.STATE_EXECUTE:
+							_state = 'EXEC';
+							break;
+						case ReservationStation.STATE_WRITE_BACK:
+							_state = 'WRITE';
+					}
+					guiItem.querySelector('.state').innerText = _state;
+					if (station.state !== ReservationStation.STATE_IDLE) {
+						var _curInst = '[' + station.instruction.id + ']';
+						guiItem.querySelector('.instruction-number').innerText = _curInst;
+						for (var i = 0; i < 3; i++){
+							var td = guiItem.querySelector('.p' + (i + 1));
+							if (i >= station.parameters.length){
+								td.innerHTML = ' - ';
+							}
+							else{
+								if (station.tags[i]){
+									td.innerHTML = station.tags[i].name;
+								}
+								else {
+									td.innerHTML = station.parameters[i];
+								}
+							}
+						}
+					}
+					else{
+						guiItem.querySelector('.instruction-number').innerText = '';
+						for (var i = 0; i < 3; i++){
+							var td = guiItem.querySelector('.p' + (i + 1));
+								td.innerHTML = '';
+						}
+					}
+						
+				}
+			}
+
+			$(function(){
+				var program = ' ld F6, 105' +
+				' ld f2, 101' +
+				' muld f0, f2, f4' +
+				' subd f8, f6, f2' +
+				' divd f10, f0, f6' +
+				' addd f6, f8, f2' +
+				'';
+				var main = init(program);
+				initGUI(main);
+				update(main);
+				$('#dialog').dialog({
+					 autoOpen: false,
+					 closable: false,
+					 resizable: false,
+					 height: 500,
+					 width: 600,
+					 modal: true,
+				});
+				var next = document.getElementById('action-step');
+				next.onclick = function() {
+					var done = main.step();
+					update(main);
+					if (done && interval) {
+						clearInterval(interval);
+					}
+				};
+				var run = document.getElementById('action-run');
+				run.onclick = function() {
+					interval = setInterval(next.onclick, 100);
+				};
+
+				var end = document.getElementById('action-end');
+				end.onclick = function() {
+					main.run();
+					update(main);
+					if (interval) {
+						clearInterval(interval);
+					}
+				};
+				var restart = document.getElementById('action-restart');
+				restart.onclick = function(){
+					if (interval) {
+						clearInterval(interval);
+					}
+					main = init(program);
+					initGUI(main);
+					update(main);
+				};
+				var inst_edit = document.getElementById('action-inst-edit');
+				inst_edit.onclick = function(){
+					$('#dialog').dialog('open');
+				}
+				$('#inst-submit').button().click(function(){
+					program = $('#inst-edit-input').val();
+					console.log(program);
+					restart.click();
+					$('#dialog').dialog('close');
+				});
+
+			});
+		</script>
+	</html>
+
