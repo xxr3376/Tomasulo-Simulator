@@ -84,8 +84,9 @@ li:nth-child(even){
 	border-right: 1px solid #ccc;
 	padding-right: 5px;
 	margin: 0px;
+	min-height: 19px;
 }
-.station .parameter .input1,.input2,.output{
+.station .input1,.input2,.output{
 	width: 45px;
 	display: inline-block;
 	text-align: center;
@@ -115,6 +116,17 @@ li:nth-child(even){
 	display: inline-block;
 	text-align: center;
 }
+.insturction .inst-linenum{
+	width: 40px;
+	display: inline-block;
+	text-align: center;
+}
+.insturction .issue-time{
+	width: 40px;
+	display: inline-block;
+	text-align: center;
+}
+
 
 .explain{
 	color: #666;

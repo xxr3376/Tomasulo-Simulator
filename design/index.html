@@ -42,7 +42,45 @@
 						<button> Restart </button>
 						<button> End </button>
 					</div>
+
+					<div class="pane-reservation">
+						<div class="explain">保留站</div>
+						<ol id="reservation-stations" class="list">
+							<li class="station title">
+							<span class="name"> 名称</span>
+							<span class="time-remaining"> 剩余时间</span>
+							<!--<span class="busy"> NO </span> -->
+							<span class="operation"> 当前指令 </span>
+							<span class="instruction-number"> 指令行号</span>
+							<span class="state"> 状态 </span>
+							<div class="parameter">
+								<span class="input1"> 输入1 </span>
+								<span class="input2"> 输入2 </span>
+								<span class="output"> 输出 </span>
+							</div>
+							</li>
+							<li class="station">
+							<span class="name">ADD_1</span>
+							<span class="time-remaining"> 23</span>
+							<!--<span class="busy"> NO </span> -->
+							<span class="operation"> Add </span>
+							<span class="instruction-number"> [50]</span>
+							<span class="state"> IDEL </span>
+							<div class="parameter">
+								<span class="input1"> 14 </span>
+								<span class="input2"> [3] </span>
+								<span class="output"> [1] </span>
+							</div>
+							</li>
+						</ol>
+					</div>
+				</div>
+				<!-- Float to right -->
+				<div class="right-wrap">
 					<div class="pane-instruction">
+						<div class="detail">
+							指令条数：<span class="instruction-num">6</span>  PC：<span class="pc">0</span>
+						</div>
 						<div class="explain">指令队列</div>
 						<ol id="instruction-show" class="list">
 							<li class="instruction">
@@ -78,33 +116,6 @@
 							</div>
 							</li>
 						</ol>
-						<div class="detail">
-							指令条数：6  PC：0
-						</div>
-					</div>
-
-					<div class="pane-reservation">
-						<div class="explain">保留站</div>
-						<ol id="reservation-stations" class="list">
-							<li class="station">
-							<span class="name">ADD_1</span>
-							<span class="time-remaining"> 23</span>
-							<!--<span class="busy"> NO </span> -->
-							<span class="operation"> Add </span>
-							<span class="instruction-number"> [5]</span>
-							<span class="state"> IDEL </span>
-							<div class="parameter">
-								<span class="input1"> 14 </span>
-								<span class="input2"> [3] </span>
-								<span class="output"> [1] </span>
-							</div>
-						</ol>
-					</div>
-				</div>
-				<!-- Float to right -->
-				<div class="right-wrap">
-					<div class="pane-settings">
-						<div class="explain">当前配置</div>
 					</div>
 				</div>
 			</div>

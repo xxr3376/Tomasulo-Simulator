@@ -1,0 +1,304 @@
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+		<title>Tomasulo A</title>
+		<link rel="stylesheet" href="css/style.css" type="text/css" media="screen" charset="utf-8">
+		<link rel="stylesheet" href="css/font-awesome.min.css" type="text/css" media="screen" charset="utf-8">
+		<script language="javascript" type="text/javascript" src="js\jquery-1.9.1.min.js"></script>
+	</head>
+	<body>
+		<div class="page-wrap">
+			<div class="left-wrap">
+				<div class="pane-clock">
+					<i class="icon-time"></i>
+					<span class="clock">
+						3
+					</span>
+				</div>
+				<div class="pane-registers">
+					<div class="explain">寄存器堆</div>
+					<div class="registers">
+						<div class="registers-type">
+							<div class="type-name"> 浮点寄存器 </div>
+							<ol class="registers-file list" id="float-registers">
+							</ol>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="top-wrap">
+				<div class="center-wrap">
+					<div class="pane-control">
+						<button> Step </button>
+						<button> Run </button>
+						<button> Restart </button>
+						<button> End </button>
+					</div>
+
+					<div class="pane-reservation">
+						<div class="explain">保留站</div>
+						<ol id="reservation-stations" class="list">
+							<li class="station title">
+							<span class="name"> 名称</span>
+							<span class="time-remaining"> 剩余时间</span>
+							<!--<span class="busy"> NO </span> -->
+							<span class="operation"> 当前指令 </span>
+							<span class="instruction-number"> 指令行号</span>
+							<span class="state"> 状态 </span>
+								<span class="input1"> 输入1 </span>
+								<span class="input2"> 输入2 </span>
+								<span class="output"> 输出 </span>
+							</li>
+						</ol>
+					</div>
+				</div>
+				<!-- Float to right -->
+				<div class="right-wrap">
+					<div class="pane-instruction">
+						<div class="detail">
+							指令条数：<span class="instruction-num">6</span>  PC：<span class="pc">0</span>
+						</div>
+						<div class="explain">指令队列</div>
+						<ol id="instruction-show" class="list">
+							<li class="instruction title">
+								<span class="inst-linenum">行号</span>
+								<div class="instruction-detial">指令</div>
+								<span class="issue-time">读取时间</span>
+								<span class="exec-time">执行时间</span>
+								<span class="writeback-time">写回时间</span>
+							</li>
+						</ol>
+					</div>
+				</div>
+			</div>
+			<div class="bottom-wrap">
+				<div class="pane-memory">
+					<div class="explain">内存</div>
+				</div>
+			</div>
+		</div>
+	</body>
+		<script src="js/instruction_type.js"></script>
+		<script src="js/common_data_bus.js"></script>
+		<script src="js/instruction.js"></script>
+		<script src="js/memory.js"></script>
+		<script src="js/register_file.js"></script>
+		<script src="js/reservation_station.js"></script>
+		<script src="js/main.js"></script>
+		<script>
+			function init() {
+				'use strict';
+
+				var program = ' ld F6, 105' +
+				' ld f2, 101' +
+				' muld f0, f2, f4' +
+				' subd f8, f6, f2' +
+				' divd f10, f0, f6' +
+				' addd f6, f8, f2' +
+				'';
+
+				var System = {};
+				System.memory = new Memory(4096);
+				System.registerFile = new RegisterFile(11, 'F');
+				System.commonDataBus = new CommonDataBus();
+				System.reservationStations = {
+					ADD_1: new ReservationStation('ADD_1'),
+					ADD_2: new ReservationStation('ADD_2'),
+					ADD_3: new ReservationStation('ADD_3'),
+
+					MUL_1: new ReservationStation('MUL_1'),
+					MUL_2: new ReservationStation('MUL_2'),
+
+					LOAD_1: new ReservationStation('LOAD_1'),
+					LOAD_2: new ReservationStation('LOAD_2'),
+					LOAD_3: new ReservationStation('LOAD_3'),
+
+					STORE_1: new ReservationStation('STORE_1'),
+					STORE_2: new ReservationStation('STORE_2'),
+					STORE_3: new ReservationStation('STORE_3')
+
+				};
+
+
+
+				System.instructionTypes = {
+					'ADDD': new InstructionType('ADDD', 2, 0,
+					[InstructionType.PARAMETER_TYPE_REGISTER,
+					InstructionType.PARAMETER_TYPE_REGISTER,
+					InstructionType.PARAMETER_TYPE_REGISTER],
+					function(p) { return p[1] + p[2]; },
+					[System.reservationStations['ADD_1'],
+					System.reservationStations['ADD_2'],
+					System.reservationStations['ADD_3']]),
+
+					'SUBD': new InstructionType('SUBD', 2, 0,
+					[InstructionType.PARAMETER_TYPE_REGISTER,
+					InstructionType.PARAMETER_TYPE_REGISTER,
+					InstructionType.PARAMETER_TYPE_REGISTER],
+					function(p) { return p[1] - p[2]; },
+					[System.reservationStations['ADD_1'],
+					System.reservationStations['ADD_2'],
+					System.reservationStations['ADD_3']]),
+
+					'MULD': new InstructionType('MULD', 10, 0,
+					[InstructionType.PARAMETER_TYPE_REGISTER,
+					InstructionType.PARAMETER_TYPE_REGISTER,
+					InstructionType.PARAMETER_TYPE_REGISTER],
+					function(p) { return p[1] * p[2]; },
+					[System.reservationStations['MUL_1'],
+					System.reservationStations['MUL_2']]),
+
+					'DIVD': new InstructionType('DIVD', 40, 0,
+					[InstructionType.PARAMETER_TYPE_REGISTER,
+					InstructionType.PARAMETER_TYPE_REGISTER,
+					InstructionType.PARAMETER_TYPE_REGISTER],
+					function(p) { return p[1] / p[2]; },
+					[System.reservationStations['MUL_1'],
+					System.reservationStations['MUL_2']]),
+
+					'LD': new InstructionType('LD', 2, 0,
+					[InstructionType.PARAMETER_TYPE_REGISTER,
+					InstructionType.PARAMETER_TYPE_ADDRESS],
+					function(p, memory) { return memory.load(p[1]); },
+					[System.reservationStations['LOAD_1'],
+					System.reservationStations['LOAD_2'],
+					System.reservationStations['LOAD_3']]),
+
+					'ST': new InstructionType('ST', 2, -1,
+					[InstructionType.PARAMETER_TYPE_REGISTER,
+					InstructionType.PARAMETER_TYPE_ADDRESS],
+					function(p, memory) { return p[0]; },
+					[System.reservationStations['STORE_1'],
+					System.reservationStations['STORE_2'],
+					System.reservationStations['STORE_3']])
+				};
+
+				var main = new Main(program, System);
+
+				// main.run();
+				// console.log(main.instructions);
+
+				function update() {
+					var reg = document.getElementById('registers');
+					// TODO
+					var html = 'CLK: ' + System.clock + '<br>';
+					for (var i = 0; i < 11; ++i) {
+						var busy = System.commonDataBus.getBusy(InstructionType.PARAMETER_TYPE_REGISTER, 'F' + i);
+						html += 'F' + i + ': ';
+						if (busy) {
+							html += '[' + busy.instruction.id + ']<br>';
+							} else {
+							html += System.registerFile.get('F' + i) + '<br>';
+						}
+					}
+					reg.innerHTML = html;
+
+					var ins = document.getElementById('instructions');
+					// TODO
+					html = '';
+					for (var i = 0; i < main.instructions.length; ++i) {
+						var ii = main.instructions[i];
+						html += ii.id + ' ' + ii.type.name + ' ' + ii.parameters.join(', ') + '	 ';
+						html += (ii.issueTime >= 0 ? ii.issueTime : '-') + ' ';
+						html += (ii.executeTime >= 0 ? ii.executeTime : '-') + ' ';
+						html += (ii.writeBackTime >= 0 ? ii.writeBackTime : '-') + ' ';
+						html += '<br>';
+					}
+					ins.innerHTML = html;
+
+					var rs = document.getElementById('rs');
+					// TODO
+					html = '';
+					for (var name in System.reservationStations) {
+						var station = System.reservationStations[name];
+						html += name + ' ';
+						switch (station.state) {
+							case ReservationStation.STATE_IDLE:
+							html += 'IDLE';
+							break;
+							case ReservationStation.STATE_ISSUE:
+							html += 'ISSUE';
+							break;
+							case ReservationStation.STATE_EXECUTE:
+							html += 'EXEC';
+							break;
+							case ReservationStation.STATE_WRITE_BACK:
+							html += 'WRITE';
+						}
+						if (station.state !== ReservationStation.STATE_IDLE) {
+							html += ' [' + station.instruction.id + ']';
+						}
+						html += '<br>';
+					}
+					rs.innerHTML = html;
+				}
+
+				var interval;
+
+				/*
+				var next = document.getElementById('next');
+				next.onclick = function() {
+					var done = main.step();
+					update();
+					if (done && interval) {
+						clearInterval(interval);
+					}
+				};
+				update();
+
+				var run = document.getElementById('run');
+				run.onclick = function() {
+					interval = setInterval(next.onclick, 100);
+				};
+
+				var end = document.getElementById('end');
+				end.onclick = function() {
+					main.run();
+					update();
+					if (interval) {
+						clearInterval(interval);
+					}
+				};
+				*/
+				return main;
+			};
+		</script>
+		<script>
+			$(function(){
+				var main = init();
+				console.log(main);
+				var CONSTVAR={
+					'newreg' : function(name){
+						return '<li class="register"> <span class="name">'+name+'</span> <span class="value" id="reg-' + name + '"> </span> </li>';
+					},
+					'newstation' : function(name){
+						return '<li class="station" id="station-' + name + '"> <span class="name">' + name + '</span> <span class="time-remaining"></span> <span class="operation"> </span> <span class="instruction-number"> </span> <span class="state"> </span> <span class="input1">  </span> <span class="input2"> </span> <span class="output"></span> </li>';
+					},
+					'newinst' : function(linenum, detail){
+						return '<li class="instruction" id="inst-'+linenum+'"> <span class="inst-linenum">'+linenum+'</span><div class="instruction-detial">' + detail + '</div> <span class="issue-time"></span> <span class="exec-time"></span> <span class="writeback-time"></span> </li>';
+					}
+				};
+				function addFloatReg(prefix, name){
+					$('#float-registers').append($(CONSTVAR.newreg(prefix + name)));
+				}
+				function addStation(name){
+					$('#reservation-stations').append($(CONSTVAR.newstation(name)));
+				}
+				function addInstruction(num, inst){
+					$('#instruction-show').append($(CONSTVAR.newinst(num, inst)));
+				}
+				for (var i = 0; i < main.system.registerFile.count; i++){
+					addFloatReg(main.system.registerFile.prefix, i);
+				}
+				for (rs in main.system.reservationStations){
+					addStation(rs);
+				}
+				for (var i = 0; i < main.instructions.length; i++){
+					var ii = main.instructions[i];
+					addInstruction(ii.id, ii.type.name + ' ' + ii.parameters.join(', '));
+				}
+			});
+		</script>
+	</html>
+
