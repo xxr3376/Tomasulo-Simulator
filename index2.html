@@ -3,10 +3,16 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 		<title>Tomasulo A</title>
 		<link rel="stylesheet" href="css/style.css" type="text/css" media="screen" charset="utf-8">
+		<link rel="stylesheet" href="css\jquery-ui-1.10.3.custom.min.css" type="text/css" media="screen" charset="utf-8">
 		<link rel="stylesheet" href="css/font-awesome.min.css" type="text/css" media="screen" charset="utf-8">
 		<script language="javascript" type="text/javascript" src="js\jquery-1.9.1.min.js"></script>
+		<script language="javascript" type="text/javascript" src="js\jquery-ui-1.10.3.custom.min.js"></script>
 	</head>
 	<body>
+		<div id="dialog" title="instruction-edit">
+			<textarea id="inst-edit-input"></textarea>
+			<button id="inst-submit">确认</button>
+		</div>
 		<div class="page-wrap">
 			<div class="left-wrap">
 				<div class="pane-clock">
@@ -59,7 +65,7 @@
 						<div class="detail">
 							指令条数：<span class="instruction-num">6</span>  PC：<span class="pc">0</span>
 						</div>
-						<div class="explain">指令队列<span class="right"><a href="#" id="action inst-edit"><i class="icon-edit"></i>编辑</a></span></div>
+						<div class="explain">指令队列<span class="right"><a href="#" id="action-inst-edit"><i class="icon-edit"></i>编辑</a></span></div>
 						<ol id="instruction-show" class="list">
 							<li class="instruction title">
 								<span class="inst-linenum">行号</span>
@@ -202,27 +208,6 @@
 					var ii = main.instructions[i];
 					addInstruction(ii.id, ii.type.name + ' ' + ii.parameters.join(', '));
 				}
-				var next = document.getElementById('action-step');
-				next.onclick = function() {
-					var done = main.step();
-					update(main);
-					if (done && interval) {
-						clearInterval(interval);
-					}
-				};
-				var run = document.getElementById('action-run');
-				run.onclick = function() {
-					interval = setInterval(next.onclick, 100);
-				};
-
-				var end = document.getElementById('action-end');
-				end.onclick = function() {
-					main.run();
-					update(main);
-					if (interval) {
-						clearInterval(interval);
-					}
-				};
 			}
 			function update(main) {
 				document.getElementById('global-clock').innerText = main.system.clock;
@@ -256,12 +241,9 @@
 							_state = 'WRITE';
 					}
 					guiItem.querySelector('.state').innerText = _state;
-					var _curInst = '';
 					if (station.state !== ReservationStation.STATE_IDLE) {
-						_curInst = '[' + station.instruction.id + ']';
-					}
-					guiItem.querySelector('.instruction-number').innerText = _curInst;
-					if (station.parameters && station.tags){
+						var _curInst = '[' + station.instruction.id + ']';
+						guiItem.querySelector('.instruction-number').innerText = _curInst;
 						for (var i = 0; i < 3; i++){
 							var td = guiItem.querySelector('.p' + (i + 1));
 							if (i >= station.parameters.length){
@@ -277,6 +259,14 @@
 							}
 						}
 					}
+					else{
+						guiItem.querySelector('.instruction-number').innerText = '';
+						for (var i = 0; i < 3; i++){
+							var td = guiItem.querySelector('.p' + (i + 1));
+								td.innerHTML = '';
+						}
+					}
+						
 				}
 			}
 
@@ -291,6 +281,55 @@
 				var main = init(program);
 				initGUI(main);
 				update(main);
+				$('#dialog').dialog({
+					 autoOpen: false,
+					 closable: false,
+					 resizable: false,
+					 height: 500,
+					 width: 600,
+					 modal: true,
+				});
+				var next = document.getElementById('action-step');
+				next.onclick = function() {
+					var done = main.step();
+					update(main);
+					if (done && interval) {
+						clearInterval(interval);
+					}
+				};
+				var run = document.getElementById('action-run');
+				run.onclick = function() {
+					interval = setInterval(next.onclick, 100);
+				};
+
+				var end = document.getElementById('action-end');
+				end.onclick = function() {
+					main.run();
+					update(main);
+					if (interval) {
+						clearInterval(interval);
+					}
+				};
+				var restart = document.getElementById('action-restart');
+				restart.onclick = function(){
+					if (interval) {
+						clearInterval(interval);
+					}
+					main = init(program);
+					initGUI(main);
+					update(main);
+				};
+				var inst_edit = document.getElementById('action-inst-edit');
+				inst_edit.onclick = function(){
+					$('#dialog').dialog('open');
+				}
+				$('#inst-submit').button().click(function(){
+					program = $('#inst-edit-input').val();
+					console.log(program);
+					restart.click();
+					$('#dialog').dialog('close');
+				});
+
 			});
 		</script>
 	</html>

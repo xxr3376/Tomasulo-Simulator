@@ -12,6 +12,9 @@
 		this.executeTime = -1;
 		this.writeBackTime = -1;
 	}
+	Instruction.resetID = function(){
+		id = 0;
+	}
 
 	if (typeof module === 'object') {
 		module.exports = Instruction;

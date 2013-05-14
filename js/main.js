@@ -13,6 +13,7 @@
 	}
 
 	function Main(program, system) {
+		Instruction.resetID();
 		this.system = system;
 		this.system.clock = 0;
 
