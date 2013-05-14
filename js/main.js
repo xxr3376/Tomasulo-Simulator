@@ -73,7 +73,7 @@
 							switch (instruction.type.parameters[i]) {
 							case InstructionType.PARAMETER_TYPE_REGISTER:
 								tag = this.system.commonDataBus.getBusy(InstructionType.PARAMETER_TYPE_REGISTER, instruction.parameters[i]);
-								if (tag !== null) {
+								if (tag === null) {
 									value = this.system.registerFile.get(instruction.parameters[i]);
 								}
 								break;
