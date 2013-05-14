@@ -25,6 +25,7 @@
 					<span id="global-clock" class="clock">
 						3
 					</span>
+					PC：<span id="cur-pc">0</span>
 				</div>
 				<div class="pane-registers">
 					<div class="explain">寄存器堆</div>
@@ -65,9 +66,6 @@
 				<!-- Float to right -->
 				<div class="right-wrap">
 					<div class="pane-instruction">
-						<div class="detail">
-							PC：<span id="cur-pc">0</span>
-						</div>
 						<div class="explain">指令队列（共<span id="total-inst"></span>条）<span class="right"><a href="#" id="action-inst-edit"><i class="icon-edit"></i>编辑</a></span></div>
 						<ol id="instruction-show" class="list">
 							<li class="instruction title">
