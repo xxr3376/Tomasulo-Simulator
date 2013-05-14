@@ -1,8 +1,9 @@
 (function() {
 	'use strict';
 
-	function Buffer() {
+	function Buffer(_, memory) {
 		ReservationStation.apply(this, arguments);
+		this.memory = memory;
 		return this;
 	}
 

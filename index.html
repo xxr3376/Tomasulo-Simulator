@@ -25,6 +25,7 @@
 		<script src="js/memory.js"></script>
 		<script src="js/register_file.js"></script>
 		<script src="js/reservation_station.js"></script>
+		<script src="js/buffer.js"></script>
 		<script src="js/main.js"></script>
 		<script>
 			(function() {
@@ -38,7 +39,7 @@
 				              ' addd f6, f8, f2' +
 				              '';
 
-				var System = {};
+				var System = window.System = {};
 				System.memory = new Memory(4096);
 				System.registerFile = new RegisterFile(11, 'F');
 				System.commonDataBus = new CommonDataBus();
@@ -50,13 +51,13 @@
 					MUL_1: new ReservationStation('MUL_1'),
 					MUL_2: new ReservationStation('MUL_2'),
 
-					LOAD_1: new ReservationStation('LOAD_1'),
-					LOAD_2: new ReservationStation('LOAD_2'),
-					LOAD_3: new ReservationStation('LOAD_3'),
+					LOAD_1: new Buffer('LOAD_1', System.memory),
+					LOAD_2: new Buffer('LOAD_2', System.memory),
+					LOAD_3: new Buffer('LOAD_3', System.memory),
 
-					STORE_1: new ReservationStation('STORE_1'),
-					STORE_2: new ReservationStation('STORE_2'),
-					STORE_3: new ReservationStation('STORE_3')
+					STORE_1: new Buffer('STORE_1', System.memory),
+					STORE_2: new Buffer('STORE_2', System.memory),
+					STORE_3: new Buffer('STORE_3', System.memory)
 
 				};
 
@@ -100,15 +101,15 @@
 					'LD': new InstructionType('LD', 2, 0,
 											  [InstructionType.PARAMETER_TYPE_REGISTER,
 											   InstructionType.PARAMETER_TYPE_ADDRESS],
-											  function(p, memory) { return memory.load(p[1]); },
+											  function(p) { return this.memory.load(p[1]); },
 											  [System.reservationStations['LOAD_1'],
 											   System.reservationStations['LOAD_2'],
 											   System.reservationStations['LOAD_3']]),
 
-					'ST': new InstructionType('ST', 2, -1,
+					'ST': new InstructionType('ST', 2, 1,
 											  [InstructionType.PARAMETER_TYPE_REGISTER,
 											   InstructionType.PARAMETER_TYPE_ADDRESS],
-											  function(p, memory) { return p[0]; },
+											  function(p) { console.log(p); this.memory.store(p[1], p[0]); return p[0]; },
 											  [System.reservationStations['STORE_1'],
 											   System.reservationStations['STORE_2'],
 											   System.reservationStations['STORE_3']])
