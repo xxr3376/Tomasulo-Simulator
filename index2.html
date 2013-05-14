@@ -16,7 +16,7 @@
 		<div id="dialog2" title="memory-edit">
 			<input id="mem-addr" type="text" value="1" disabled="disabled" />
 			<input id="mem-val" type="text" value="12" />
-			<button id="inst-submit"> 修改 </button>
+			<button id="mem-submit"> 修改 </button>
 		</div>
 		<div class="page-wrap">
 			<div class="left-wrap">
@@ -53,8 +53,6 @@
 							<li class="station title">
 							<span class="name"> 名称</span>
 							<span class="time-remaining"> 剩余时间</span>
-							<!--<span class="busy"> NO </span> -->
-							<span class="operation"> 当前指令 </span>
 							<span class="instruction-number"> 指令行号</span>
 							<span class="state"> 状态 </span>
 								<span class="p1"> 输出 </span>
@@ -68,9 +66,9 @@
 				<div class="right-wrap">
 					<div class="pane-instruction">
 						<div class="detail">
-							指令条数：<span id="total-inst">6</span>  PC：<span id="cur-pc">0</span>
+							PC：<span id="cur-pc">0</span>
 						</div>
-						<div class="explain">指令队列<span class="right"><a href="#" id="action-inst-edit"><i class="icon-edit"></i>编辑</a></span></div>
+						<div class="explain">指令队列（共<span id="total-inst"></span>条）<span class="right"><a href="#" id="action-inst-edit"><i class="icon-edit"></i>编辑</a></span></div>
 						<ol id="instruction-show" class="list">
 							<li class="instruction title">
 								<span class="inst-linenum">行号</span>
@@ -86,535 +84,7 @@
 			<div class="bottom-wrap">
 				<div class="explain">内存</div>
 				<div class="pane-memory">
-					<div class="memory-show">
-						<div id = "m0001" class="memory" onclick="{console.log('xx');} ">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
-						<div class="memory">
-							<span class="addr">0001</span>
-							<span class="value">1.233232</span>
-						</div>
+					<div id="memory-show">
 					</div>
 				</div>
 			</div>
@@ -713,15 +183,19 @@
 				$('.station:not(.title)').remove();
 				$('.instruction:not(.title)').remove();
 				$('.register:not(.title)').remove();
+				$('.memory').remove();
 				var CONSTVAR={
 					'newreg' : function(name){
 						return '<li class="register"> <span class="name">'+name+'</span> <span class="value" id="reg-' + name + '"> </span> </li>';
 					},
 					'newstation' : function(name){
-						return '<li class="station" id="station-' + name + '"> <span class="name">' + name + '</span> <span class="time-remaining"></span> <span class="operation"> </span> <span class="instruction-number"> </span> <span class="state"> </span> <span class="p1">  </span> <span class="p2"> </span> <span class="p3"></span> </li>';
+						return '<li class="station" id="station-' + name + '"> <span class="name">' + name + '</span> <span class="time-remaining"></span>  <span class="instruction-number"> </span> <span class="state"> </span> <span class="p1">  </span> <span class="p2"> </span> <span class="p3"></span> </li>';
 					},
 					'newinst' : function(linenum, detail){
 						return '<li class="instruction" id="inst-'+linenum+'"> <span class="inst-linenum">'+linenum+'</span><span class="instruction-detail">' + detail + '</span> <span class="issue-time"></span> <span class="exec-time"></span> <span class="writeback-time"></span> </li>';
+					},
+					'newmem' : function(addr, value){
+						return '<div id="m' + addr + '" class="memory" onclick="editMemory(' + addr + ');"><span class="addr">'+ addr + '</span><span class="value">' + value + '</span></div>';
 					}
 				};
 				function addFloatReg(prefix, name){
@@ -733,6 +207,9 @@
 				function addInstruction(num, inst){
 					$('#instruction-show').append($(CONSTVAR.newinst(num, inst)));
 				}
+				function addMem(addr, value){
+					$('#memory-show').append($(CONSTVAR.newmem(addr, value)));
+				}
 				for (var i = 0; i < main.system.registerFile.count; i++){
 					addFloatReg(main.system.registerFile.prefix, i);
 				}
@@ -743,6 +220,9 @@
 					var ii = main.instructions[i];
 					addInstruction(ii.id, ii.type.name + ' ' + ii.parameters.join(', '));
 				}
+				for (var i = 0; i < main.system.memory.size; i++){
+					addMem(i, main.system.memory.data[i]);
+				}
 			}
 			function update(main) {
 				document.getElementById('global-clock').innerText = main.system.clock;
@@ -751,6 +231,7 @@
 					var value = main.system.registerFile.get('F' + i);
 					document.getElementById('reg-F' + i).innerText = value;
 				}
+				$('#total-inst').text(main.instructions.length);
 				for (var i = 0; i < main.instructions.length; ++i) {
 					var ii = main.instructions[i];
 					var inst = document.getElementById('inst-' + ii.id);
@@ -804,18 +285,14 @@
 				}
 				$('#cur-pc').text(main.issuedInstructions);
 			}
-			function editMemory(addr){
-
-			}
 
 			$(function(){
-				var program = ' ld F6, 105' +
-				' ld f2, 101' +
-				' muld f0, f2, f4' +
-				' subd f8, f6, f2' +
-				' divd f10, f0, f6' +
-				' addd f6, f8, f2' +
-				'';
+				var program = 'ld F6, 105\n' +
+				'ld f2, 101\n' +
+				'muld f0, f2, f4\n' +
+				'subd f8, f6, f2\n' +
+				'divd f10, f0, f6\n' +
+				'addd f6, f8, f2';
 				var main = init(program);
 				initGUI(main);
 				update(main);
@@ -896,6 +373,18 @@
 						}, 500);
 
 					}
+				});
+				window.editMemory = function(addr){
+					$('#dialog2').dialog('open');
+					$('#mem-addr').val(addr);
+					$('#mem-val').val(main.system.memory.data[addr]);
+				}
+				$('#mem-submit').on('click', function(){
+					var addr = $('#mem-addr').val();
+					var val = $('#mem-val').val();
+					main.system.memory.data[addr] = val;
+					$('#m' + addr + ' .value').text(val);
+					$('#dialog2').dialog('close');
 				});
 			});
 		</script>
