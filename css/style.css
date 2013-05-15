@@ -29,7 +29,7 @@ span.right i{
 	left: 150px;
 	right: 0;
 	bottom: 300px;
-	overflow: scroll; 
+	overflow-y: hidden; 
 }
 .left-wrap{
 	position: absolute;
@@ -42,8 +42,8 @@ span.right i{
 	position: absolute;
 	left: 0;
 	right: 500px;
-	height: 500px;
-	overflow:auto;
+	height: 100%;
+	overflow-y: auto; 
 }
 .bottom-wrap{
 	position: absolute;
@@ -52,6 +52,7 @@ span.right i{
 	bottom: 0;
 	/* top: 500px; */
 	height: 300px;
+	overflow-y: hidden; 
 }
 .right-wrap{
 	position: absolute;
@@ -59,6 +60,8 @@ span.right i{
 	height: 100%;
 	right: 0;
 	border-left: 2px solid #666;
+	overflow-x: hidden; 
+	overflow-y: auto; 
 }
 .timeline{
 	margin-left: 10px;
@@ -72,7 +75,7 @@ span.right i{
 	border-bottom: 1px solid #EEE;
 	-webkit-box-sizing: border-box;
 	box-sizing: border-box;
-	min-height: 10px;
+	height: 30px;
 	padding: 5px 5px 5px 5px;
 	position: relative;
 	overflow: hidden;
@@ -101,7 +104,8 @@ span.right i{
 .station .parameter{
 	margin-left: 10px;
 	display: inline-block;
-	padding: 0;
+	padding-left: 0;
+	padding-right: 0;
 	margin: 0px;
 }
 li.title{
@@ -112,11 +116,13 @@ li.title{
 li:nth-child(even){
 	background: #EDF9FF;
 }
-.station span{
+li span{
 	border-right: 1px solid #ccc;
 	padding-right: 5px;
 	margin: 0px;
-	min-height: 19px;
+	display: inline-block;
+	height: 28px;
+	vertical-align: top;
 }
 .station .p1,
 .station .p2,
@@ -144,12 +150,6 @@ li:nth-child(even){
 	width: 60px;
 	display: inline-block;
 	text-align: center;
-}
-.instruction span{
-	border-right: 1px solid #ccc;
-	padding-right: 5px;
-	margin: 0px;
-	min-height: 19px;
 }
 .instruction .inst-linenum{
 	width: 30px;
@@ -198,12 +198,13 @@ li:nth-child(even){
 	font-size: 2em;
 }
 .memory{
-	border: 1px solid #000;
+	border: 1px solid #CCC;
 	width: 50px;
 	height: 40px;
 	margin: 5px;
 	padding: 5px;
 	float:left;
+	border-radius: 5px;
 }
 .memory .addr{
 	color: #CCC;
@@ -217,7 +218,27 @@ li:nth-child(even){
 	display: block;
 	text-align: center;
 }
-
+.register .name{
+	padding-left: 10px;
+	width: 20px;
+	display: inline-block;
+}
+.register .value{
+	padding-left: 10px;
+	width: 80px;
+	text-align: right;
+	display: inline-block;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	font-family: "consolas";
+	border: none;
+}
+.registers .type-name{
+	width: 100%;
+	text-align: center;
+	color: #A44;
+}
 #dialog textarea{
 	width: 500px;
 	height: 350px;

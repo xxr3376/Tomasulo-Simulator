@@ -218,7 +218,6 @@
 				document.getElementById('memory-show').innerHTML = _html ;
 				$('#memory-show').on('click', '.memory', function() {
 					editMemory(this.id.substring(1));
-// editMemory(addr);
 				});
 			}
 			function update(main) {
@@ -226,10 +225,10 @@
 				for (var i = 0; i < 11; ++i) {
 					var busy = main.system.commonDataBus.getBusy(InstructionType.PARAMETER_TYPE_REGISTER, 'F' + i);
 					var value = main.system.registerFile.get('F' + i);
-					document.getElementById('reg-F' + i).innerText = value;
+					document.getElementById('reg-F' + i).innerText = value.toFixed(5);
 				}
 				$('#total-inst').text(main.instructions.length);
-				for (var i = 1; i < main.instructions.length; ++i) {
+				for (var i = 0; i < main.instructions.length; ++i) {
 					var ii = main.instructions[i];
 					var inst = document.getElementById('inst-' + ii.id);
 					inst.querySelector('.issue-time').innerText = ii.issueTime > 0 ? ii.issueTime : '';
@@ -253,8 +252,12 @@
 						case ReservationStation.STATE_WRITE_BACK:
 							_state = 'WRITE';
 					}
+					var _remain_time = -1;
 					guiItem.querySelector('.state').innerText = _state;
 					if (station.state !== ReservationStation.STATE_IDLE) {
+						if (station.instruction){
+							_remain_time = station.instruction.time;
+						}
 						var _curInst = '[' + station.instruction.id + ']';
 						guiItem.querySelector('.instruction-number').innerText = _curInst;
 						for (var i = 0; i < 3; i++){
@@ -279,6 +282,7 @@
 								td.innerHTML = '';
 						}
 					}
+					guiItem.querySelector('.time-remaining').innerText = _remain_time >= 0 ? _remain_time : '';
 				}
 				$('#cur-pc').text(main.issuedInstructions);
 				for (var i = 0; i < main.system.memory.size; i++){
@@ -324,6 +328,7 @@
 				$('#action-end').button().on('click', function() {
 					main.run();
 					update(main);
+					$('#action-run').attr('disabled', null);
 					if (interval) {
 						clearInterval(interval);
 					}
@@ -352,7 +357,7 @@
 				$('#inst-submit').button().click(function(){
 					program = $('#inst-edit-input').val();
 					console.log(program);
-					restart.click();
+					$('#action-restart').click();
 					$('#dialog').dialog('close');
 				});
 
