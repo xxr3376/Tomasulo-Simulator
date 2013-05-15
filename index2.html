@@ -5,7 +5,7 @@
 		<link rel="stylesheet" href="css/style.css" type="text/css" media="screen" charset="utf-8">
 		<link rel="stylesheet" href="css\jquery-ui-1.10.3.custom.min.css" type="text/css" media="screen" charset="utf-8">
 		<link rel="stylesheet" href="css/font-awesome.min.css" type="text/css" media="screen" charset="utf-8">
-		<script language="javascript" type="text/javascript" src="js\jquery-1.9.1.min.js"></script>
+		<script language="javascript" type="text/javascript" src="js\jquery-1.9.1.js"></script>
 		<script language="javascript" type="text/javascript" src="js\jquery-ui-1.10.3.custom.min.js"></script>
 	</head>
 	<body>
@@ -23,7 +23,7 @@
 				<div class="pane-clock">
 					<i class="icon-time"></i>
 					<span id="global-clock" class="clock">
-						3
+						0
 					</span>
 					PC：<span id="cur-pc">0</span>
 				</div>
@@ -100,7 +100,6 @@
 		<script>
 			function init(program) {
 				'use strict';
-
 				var System = {};
 				System.memory = new Memory(4096);
 				System.registerFile = new RegisterFile(11, 'F');
@@ -174,15 +173,13 @@
 											   System.reservationStations['STORE_3']])
 				};
 				
-				var main = new Main(program, System);
-				return main;
+				return new Main(program, System);
 			};
 			var interval;
 			function initGUI(main){
 				$('.station:not(.title)').remove();
 				$('.instruction:not(.title)').remove();
 				$('.register:not(.title)').remove();
-				$('.memory').remove();
 				var CONSTVAR={
 					'newreg' : function(name){
 						return '<li class="register"> <span class="name">'+name+'</span> <span class="value" id="reg-' + name + '"> </span> </li>';
@@ -194,33 +191,35 @@
 						return '<li class="instruction" id="inst-'+linenum+'"> <span class="inst-linenum">'+linenum+'</span><span class="instruction-detail">' + detail + '</span> <span class="issue-time"></span> <span class="exec-time"></span> <span class="writeback-time"></span> </li>';
 					},
 					'newmem' : function(addr, value){
-						return '<div id="m' + addr + '" class="memory" onclick="editMemory(' + addr + ');"><span class="addr">'+ addr + '</span><span class="value">' + value + '</span></div>';
+						return '<div id="m' + addr + '" class="memory"><span class="addr">'+ addr + '</span><span class="value">' + value + '</span></div>';
 					}
 				};
-				function addFloatReg(prefix, name){
-					$('#float-registers').append($(CONSTVAR.newreg(prefix + name)));
-				}
-				function addStation(name){
-					$('#reservation-stations').append($(CONSTVAR.newstation(name)));
-				}
-				function addInstruction(num, inst){
-					$('#instruction-show').append($(CONSTVAR.newinst(num, inst)));
-				}
+				var _html = '';
 				for (var i = 0; i < main.system.registerFile.count; i++){
-					addFloatReg(main.system.registerFile.prefix, i);
+					_html += CONSTVAR.newreg(main.system.registerFile.prefix + i);
 				}
+				$('#float-registers').get(0).innerHTML += ((_html));
+				var _html = '';
 				for (rs in main.system.reservationStations){
-					addStation(rs);
+					_html += CONSTVAR.newstation(rs);
 				}
+				$('#reservation-stations').get(0).innerHTML += ((_html));
+
+				var _html = '';
 				for (var i = 0; i < main.instructions.length; i++){
 					var ii = main.instructions[i];
-					addInstruction(ii.id, ii.type.name + ' ' + ii.parameters.join(', '));
+					_html += CONSTVAR.newinst(ii.id, ii.type.name + ' ' + ii.parameters.join(', '));
 				}
-				var memHtml = '';
+				$('#instruction-show').get(0).innerHTML += ((_html));
+				var _html = '';
 				for (var i = 0; i < main.system.memory.size; i++){
-					memHtml += CONSTVAR.newmem(i, main.system.memory.data[i]);
+					_html += CONSTVAR.newmem(i, main.system.memory.data[i]);
 				}
-				$('#memory-show').append($(memHtml));
+				document.getElementById('memory-show').innerHTML = _html ;
+				$('#memory-show').on('click', '.memory', function() {
+					editMemory(this.id.substring(1));
+// editMemory(addr);
+				});
 			}
 			function update(main) {
 				document.getElementById('global-clock').innerText = main.system.clock;
@@ -230,7 +229,7 @@
 					document.getElementById('reg-F' + i).innerText = value;
 				}
 				$('#total-inst').text(main.instructions.length);
-				for (var i = 0; i < main.instructions.length; ++i) {
+				for (var i = 1; i < main.instructions.length; ++i) {
 					var ii = main.instructions[i];
 					var inst = document.getElementById('inst-' + ii.id);
 					inst.querySelector('.issue-time').innerText = ii.issueTime > 0 ? ii.issueTime : '';
@@ -282,8 +281,10 @@
 					}
 				}
 				$('#cur-pc').text(main.issuedInstructions);
+				for (var i = 0; i < main.system.memory.size; i++){
+					document.getElementById('m' + i).children[1].innerText = main.system.memory.data[i];
+				}
 			}
-
 			$(function(){
 				var program = 'ld F6, 105\n' +
 				'ld f2, 101\n' +
