@@ -206,9 +206,6 @@
 				function addInstruction(num, inst){
 					$('#instruction-show').append($(CONSTVAR.newinst(num, inst)));
 				}
-				function addMem(addr, value){
-					$('#memory-show').append($(CONSTVAR.newmem(addr, value)));
-				}
 				for (var i = 0; i < main.system.registerFile.count; i++){
 					addFloatReg(main.system.registerFile.prefix, i);
 				}
@@ -219,9 +216,11 @@
 					var ii = main.instructions[i];
 					addInstruction(ii.id, ii.type.name + ' ' + ii.parameters.join(', '));
 				}
+				var memHtml = '';
 				for (var i = 0; i < main.system.memory.size; i++){
-					addMem(i, main.system.memory.data[i]);
+					memHtml += CONSTVAR.newmem(i, main.system.memory.data[i]);
 				}
+				$('#memory-show').append($(memHtml));
 			}
 			function update(main) {
 				document.getElementById('global-clock').innerText = main.system.clock;
@@ -309,48 +308,52 @@
 					 width: 600,
 					 modal: true,
 				});
-				var next = document.getElementById('action-step');
-				next.onclick = function() {
+				$('#action-step').button().on('click', function() {
 					var done = main.step();
 					update(main);
 					if (done && interval) {
 						clearInterval(interval);
+						$('#action-run').attr('disabled', null);
 					}
-				};
-				var run = document.getElementById('action-run');
-				run.onclick = function() {
-					interval = setInterval(next.onclick, 100);
-				};
-
-				var end = document.getElementById('action-end');
-				end.onclick = function() {
+				});
+				$('#action-run').button().on('click', function() {
+					$('#action-run').attr('disabled', 'disabled');
+					interval = setInterval(function(){$('#action-step').click();}, 100);
+				});
+				$('#action-end').button().on('click', function() {
 					main.run();
 					update(main);
 					if (interval) {
 						clearInterval(interval);
 					}
-				};
-				var restart = document.getElementById('action-restart');
-				restart.onclick = function(){
+				});
+				$('#action-restart').button().on('click', function(){
 					if (interval) {
 						clearInterval(interval);
 					}
 					main = init(program);
 					initGUI(main);
 					update(main);
-				};
-				var inst_edit = document.getElementById('action-inst-edit');
-				inst_edit.onclick = function(){
+				});
+				$('#action-multistep').button().on('click', function(){
+					var n = prompt("请输入运行步数");
+					$('#action-multistep').attr('disabled', 'disabled');
+					for (var i = 0; i < n; i += 1){
+						main.step();
+					}
+					update(main);
+					$('#action-multistep').attr('disabled', null);
+				});
+				$('#action-inst-edit').on('click', function(){
 					$('#inst-edit-input').val(program);
 					$('#dialog').dialog('open');
-				}
+				});
 				$('#inst-submit').button().click(function(){
 					program = $('#inst-edit-input').val();
 					console.log(program);
 					restart.click();
 					$('#dialog').dialog('close');
 				});
-
 
 				var bwExpand = true;
 				$('.bottom-wrap .explain').on('click', function() {
