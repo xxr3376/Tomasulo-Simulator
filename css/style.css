@@ -168,9 +168,9 @@ li span{
 	display: inline-block;
 }
 .station .state{
-	width: 70px;
+	width: 40px;
 	display: inline-block;
-	text-align: left;
+	text-align: center;
 }
 .insturction .inst-linenum{
 	width: 40px;
@@ -179,6 +179,7 @@ li span{
 }
 
 .explain{
+	font-weight: bold;
 	color: #666;
 	font-size: 0.8rem;
 	padding: 3px 0;
@@ -188,7 +189,7 @@ li span{
 	background: -webkit-gradient(linear, left top, left bottom, color-stop(0, #E6E6E6), color-stop(1, #DDD));
 	background: -webkit-linear-gradient(top, #E6E6E6 0%, #DDD 100%);
 	background: linear-gradient(top, #E6E6E6 0%, #DDD 100%);
-	-webkit-box-shadow: inset 0 1px 0 #EEE;
+	-webkit-box-shadow: inset 2px 2px 2px #AAA;
 	box-shadow: inset 0 1px 0 #EEE;
 	border-color: #CCC;
 	text-shadow: 0 1px 0 #F3F3F3;
@@ -205,6 +206,7 @@ li span{
 	padding: 5px;
 	float:left;
 	border-radius: 5px;
+	background-color: #F7FCFF;
 }
 .memory .addr{
 	color: #CCC;
